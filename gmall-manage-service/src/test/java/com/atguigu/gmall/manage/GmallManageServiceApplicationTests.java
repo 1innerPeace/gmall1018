@@ -49,5 +49,38 @@ class Test1 implements Runnable{
 		return nu;
 	}*/
 
+}
+class ThreadSafeCache{
+	private int result;
+	public int getResult(){
+		return result;
+	}
+	public synchronized void setResult(int result){
+		this.result=result;
+	}
+
+	public static void main(String[] args) {
+		ThreadSafeCache threadSafeCache = new ThreadSafeCache();
+		for (int i = 0; i <8 ; i++) {
+			new Thread(() -> {
+				//long id = Thread.currentThread().getId();
+				String name = Thread.currentThread().getName();
+				while (threadSafeCache.getResult() <100){
+					System.out.println("我是线程"+name+"我陷入循环了");
+				}
+				System.out.println("我执行了");
+			}).start();
+			System.out.println("我想睡");
+		}try{
+			System.out.println("我准备睡了");
+			String name2= Thread.currentThread().getName();
+			System.out.println(name2);
+			Thread.sleep(1000);
+			System.out.println("我睡完了");
+		}catch (InterruptedException e){
+			e.printStackTrace();
+		}
+		threadSafeCache.setResult(200);
+	}
 
 }
